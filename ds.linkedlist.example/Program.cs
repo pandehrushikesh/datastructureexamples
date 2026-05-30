@@ -40,7 +40,9 @@ singly.RemoveLast();
 Section("8. Reverse — rewire every Next pointer in-place O(n)");
 singly.Reverse();
 
-Console.WriteLine($"\n  IsEmpty={singly.IsEmpty}   Count={singly.Count}");
+Section("9. Clear — O(1): just drop the head reference, GC does the rest");
+singly.Clear();
+Console.WriteLine($"  IsEmpty={singly.IsEmpty}   Count={singly.Count}");
 
 // ════════════════════════════════════════════════════════════════════════════
 //  PART 2 — DOUBLY LINKED LIST
@@ -87,7 +89,9 @@ doubly.RemoveFirst();
 Section("9. RemoveLast — O(1) — update tail and clear its Next (singly needs O(n) walk!)");
 doubly.RemoveLast();
 
-Console.WriteLine($"\n  IsEmpty={doubly.IsEmpty}   Count={doubly.Count}");
+Section("10. Clear — O(1): null BOTH head and tail, or tail keeps the chain alive");
+doubly.Clear();
+Console.WriteLine($"  IsEmpty={doubly.IsEmpty}   Count={doubly.Count}");
 doubly.PrintList("Final state");
 
 Console.WriteLine("\n══════════════════════════════════════════════════════════");

@@ -198,6 +198,25 @@ public class SinglyLinkedList<T> where T : IComparable<T>
         return false;
     }
 
+    // ── Clear ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Clears the list — O(1) in C#.
+    /// Setting _head to null makes the entire chain unreachable; the GC collects
+    /// every node automatically. No need to walk and null out each Next pointer
+    /// (that would be required in C++ where you must free() each node manually).
+    /// Exception: if T were IDisposable, you'd walk the list calling Dispose()
+    /// on each value before clearing — but that's about unmanaged resources, not GC.
+    /// </summary>
+    public void Clear()
+    {
+        Console.WriteLine($"\n[Clear] Dropping reference to head. GC will collect all {Count} node(s).");
+        _head = null;
+        Count = 0;
+        Console.WriteLine("[Clear] Done. List is now empty.");
+        PrintList("After Clear");
+    }
+
     // ── Reversal ─────────────────────────────────────────────────────────────
 
     /// <summary>

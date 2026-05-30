@@ -225,6 +225,27 @@ public class DoublyLinkedList<T> where T : IComparable<T>
         return false;
     }
 
+    // ── Clear ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Clears the list — O(1) in C#.
+    /// Both _head AND _tail must be nulled out — if only _head were cleared,
+    /// _tail would still hold a reference to the last node, keeping the entire
+    /// chain alive in memory (a leak). The GC collects everything once both
+    /// ends are released.
+    /// </summary>
+    public void Clear()
+    {
+        Console.WriteLine($"\n[Clear] Nulling head and tail. GC will collect all {Count} node(s).");
+        Console.WriteLine("        (Doubly-linked: BOTH _head and _tail must be cleared —");
+        Console.WriteLine("         leaving _tail set would keep the whole chain alive in memory.)");
+        _head = null;
+        _tail = null;
+        Count = 0;
+        Console.WriteLine("[Clear] Done. List is now empty.");
+        PrintList("After Clear");
+    }
+
     // ── Query ────────────────────────────────────────────────────────────────
 
     /// <summary>Forward scan — O(n).</summary>
