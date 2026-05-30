@@ -1,0 +1,14 @@
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\bin\Debug\net10.0\ds.array.example.exe
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\bin\Debug\net10.0\ds.array.example.deps.json
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\bin\Debug\net10.0\ds.array.example.runtimeconfig.json
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\bin\Debug\net10.0\ds.array.example.dll
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\bin\Debug\net10.0\ds.array.example.pdb
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.AssemblyInfoInputs.cache
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.AssemblyInfo.cs
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.csproj.CoreCompileInputs.cache
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.dll
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\refint\ds.array.example.dll
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.pdb
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ds.array.example.genruntimeconfig.cache
+C:\Users\Prachi\source\repos\datastructureexamples\ds.array.example\obj\Debug\net10.0\ref\ds.array.example.dll
