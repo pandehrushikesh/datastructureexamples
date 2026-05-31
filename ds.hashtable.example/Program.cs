@@ -97,19 +97,28 @@ Console.WriteLine("""
   the chain grow and then be walked on lookup.
 """);
 
-var small = new DsHashTable<string, string>();
-// We cannot easily control GetHashCode() output, but with only 7 buckets
-// and enough keys, a collision is virtually guaranteed.
-// Add enough entries to make one collision highly likely before rehash.
-small.Put("cat",    "meow");
-small.Put("dog",    "woof");
-small.Put("act",    "do");       // "act" and "cat" often collide (anagram → same chars)
-small.Put("tac",    "reverse");
-small.Put("god",    "divine");   // "dog"/"god" anagram — may collide
+// ── Why a custom key type? ────────────────────────────────────────────────────
+// .NET enables hash randomisation by default (DOTNET_GC_HASHTABLE_SEED) to
+// prevent hash-flooding attacks. This means string.GetHashCode() returns a
+// DIFFERENT value on every process run — we cannot predict which bucket any
+// string will land in.  Anagram strings (cat/act/tac) share the same characters
+// but are NOT hashed by summing char codes; the claim in naive demos is wrong.
+//
+// Solution: a custom key type that overrides GetHashCode() with a fixed,
+// deterministic value. We make three different keys all return the same hash
+// so a collision is GUARANTEED every run — and you can reason about exactly
+// which bucket they occupy.
+// ─────────────────────────────────────────────────────────────────────────────
+var small = new DsHashTable<CollisionKey, string>();
+small.Put(new CollisionKey("Alpha"),  "first");
+small.Put(new CollisionKey("Beta"),   "second");  // ← guaranteed collision with Alpha
+small.Put(new CollisionKey("Gamma"),  "third");   // ← guaranteed collision with Alpha & Beta
+small.Put(new CollisionKey("Delta"),  "fourth");  // lives in a different bucket (hash=99)
 
-Console.WriteLine("\n  The bucket state above shows any chains that formed.");
-Console.WriteLine("  Retrieve a key that is inside a multi-entry chain:");
-small.Get("act");
+Console.WriteLine("\n  All three of Alpha/Beta/Gamma have GetHashCode()=42 — all land in the");
+Console.WriteLine("  same bucket, forming a chain of length 3. Delta (hash=99) is elsewhere.");
+Console.WriteLine("\n  Retrieve 'Gamma' — it is the THIRD entry in the chain, showing the walk:");
+small.Get(new CollisionKey("Gamma"));
 
 // ────────────────────────────────────────────────────────────────────────────
 Section("9. Clear — reset the table");
