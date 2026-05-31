@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="ds.array.example/ds.array.example.csproj" />
+  <Project Path="ds.hashtable.example/ds.hashtable.example.csproj" />
   <Project Path="ds.linkedlist.example/ds.linkedlist.example.csproj" />
   <Project Path="ds.shared/ds.shared.csproj" />
   <Project Path="ds.stack.queue.example/ds.stack.queue.example.csproj" />
