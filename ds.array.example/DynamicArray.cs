@@ -1,3 +1,5 @@
+using ds.shared;
+
 namespace ds.array.example;
 
 /// <summary>
@@ -26,16 +28,8 @@ public class DynamicArray<T> where T : IComparable<T>
 
     public T this[int index]
     {
-        get
-        {
-            GuardIndex(index);
-            return _data[index];
-        }
-        set
-        {
-            GuardIndex(index);
-            _data[index] = value;
-        }
+        get { GuardIndex(index); return _data[index]; }
+        set { GuardIndex(index); _data[index] = value; }
     }
 
     // ── Add / Insert ─────────────────────────────────────────────────────────
@@ -43,6 +37,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// <summary>Appends an element at the end — O(1) amortised.</summary>
     public void Add(T item)
     {
+        BigO.Print("O(1) amortised",
+            "Element is placed directly at the next free slot. The backing array occasionally doubles " +
+            "in size (O(n) copy), but that cost is spread across n adds, making each O(1) on average.");
+
         Console.WriteLine($"\n[Add] Adding '{item}' to the end. Count={_count}, Capacity={Capacity}.");
         EnsureCapacity();
         _data[_count] = item;
@@ -56,10 +54,13 @@ public class DynamicArray<T> where T : IComparable<T>
         if (index < 0 || index > _count)
             throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} is out of range [0..{_count}].");
 
+        BigO.Print("O(n)",
+            "Up to n elements must shift one position to the right to open a gap at the target index. " +
+            "Worst case is inserting at index 0, which moves every element.");
+
         Console.WriteLine($"\n[Insert] Inserting '{item}' at index {index}. Count={_count}, Capacity={Capacity}.");
         EnsureCapacity();
 
-        // Shift elements right to make room
         Console.WriteLine($"[Insert] Shifting {_count - index} element(s) one position to the right...");
         for (int i = _count; i > index; i--)
         {
@@ -77,6 +78,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// <summary>Removes the first occurrence of <paramref name="item"/> — O(n).</summary>
     public bool Remove(T item)
     {
+        BigO.Print("O(n)",
+            "Requires a linear scan to find the element, then a second O(n) pass to left-shift " +
+            "everything after it. Both phases are O(n), so the overall cost is O(n).");
+
         Console.WriteLine($"\n[Remove] Searching for '{item}'...");
         for (int i = 0; i < _count; i++)
         {
@@ -97,14 +102,19 @@ public class DynamicArray<T> where T : IComparable<T>
     {
         GuardIndex(index);
         if (printBanner)
+        {
+            BigO.Print("O(n)",
+                "All elements after the removed index must shift one position left to close the gap. " +
+                "Worst case is removing index 0, which shifts every remaining element.");
             Console.WriteLine($"\n[RemoveAt] Removing element at index {index} ('{_data[index]}').");
+        }
 
         for (int i = index; i < _count - 1; i++)
         {
             Console.WriteLine($"         _data[{i}] = _data[{i + 1}]  ('{_data[i + 1]}')");
             _data[i] = _data[i + 1];
         }
-        _data[_count - 1] = default!;   // release reference / clear value
+        _data[_count - 1] = default!;
         _count--;
         Console.WriteLine($"[RemoveAt] Done. Count is now {_count}.");
     }
@@ -114,6 +124,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// <summary>Returns true if <paramref name="item"/> is present — O(n) linear scan.</summary>
     public bool Contains(T item)
     {
+        BigO.Print("O(n)",
+            "Each element is checked one by one from index 0. Best case is O(1) if the item is at " +
+            "index 0; worst case is O(n) if it's at the end or absent.");
+
         Console.WriteLine($"\n[Contains] Searching for '{item}'...");
         for (int i = 0; i < _count; i++)
         {
@@ -136,6 +150,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// </summary>
     public void BubbleSort()
     {
+        BigO.Print("O(n²)",
+            "Two nested loops: the outer runs n-1 passes and the inner compares adjacent pairs, " +
+            "shrinking by one each pass. Total comparisons ≈ n(n-1)/2, which is O(n²).");
+
         Console.WriteLine("\n[BubbleSort] Starting...");
         PrintState("Before");
 
@@ -173,6 +191,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// </summary>
     public void SelectionSort()
     {
+        BigO.Print("O(n²)",
+            "n-1 rounds, each scanning the entire unsorted portion to find the minimum — " +
+            "that's (n-1) + (n-2) + … + 1 = n(n-1)/2 comparisons regardless of input order.");
+
         Console.WriteLine("\n[SelectionSort] Starting...");
         PrintState("Before");
 
@@ -215,6 +237,10 @@ public class DynamicArray<T> where T : IComparable<T>
     /// </summary>
     public void MergeSort()
     {
+        BigO.Print("O(n log n)",
+            "The array is halved log₂(n) times (depth of recursion), and each level of the recursion " +
+            "tree does O(n) work during the merge phase — giving O(n log n) overall.");
+
         Console.WriteLine("\n[MergeSort] Starting...");
         PrintState("Before");
         MergeSortRecursive(0, _count - 1, depth: 0);
@@ -236,13 +262,13 @@ public class DynamicArray<T> where T : IComparable<T>
 
     private void Merge(int left, int mid, int right, string indent)
     {
-        int leftLen = mid - left + 1;
+        int leftLen  = mid - left + 1;
         int rightLen = right - mid;
 
-        T[] leftArr = new T[leftLen];
+        T[] leftArr  = new T[leftLen];
         T[] rightArr = new T[rightLen];
 
-        for (int i = 0; i < leftLen; i++) leftArr[i] = _data[left + i];
+        for (int i = 0; i < leftLen;  i++) leftArr[i]  = _data[left + i];
         for (int i = 0; i < rightLen; i++) rightArr[i] = _data[mid + 1 + i];
 
         Console.WriteLine($"{indent}[Merge] Merging left=[{string.Join(", ", leftArr)}] and right=[{string.Join(", ", rightArr)}]");
@@ -261,7 +287,7 @@ public class DynamicArray<T> where T : IComparable<T>
                 _data[k++] = rightArr[ri++];
             }
         }
-        while (li < leftLen) { Console.WriteLine($"{indent}  Remaining from left: '{leftArr[li]}'"); _data[k++] = leftArr[li++]; }
+        while (li < leftLen)  { Console.WriteLine($"{indent}  Remaining from left: '{leftArr[li]}'");   _data[k++] = leftArr[li++]; }
         while (ri < rightLen) { Console.WriteLine($"{indent}  Remaining from right: '{rightArr[ri]}'"); _data[k++] = rightArr[ri++]; }
 
         Console.WriteLine($"{indent}[Merge] Result segment: [{string.Join(", ", _data[left..(right + 1)])}]");
@@ -288,10 +314,7 @@ public class DynamicArray<T> where T : IComparable<T>
         Console.WriteLine($"[DynamicArray] Internal array replaced. New capacity: {newCapacity}.");
     }
 
-    private void Swap(int i, int j)
-    {
-        (_data[i], _data[j]) = (_data[j], _data[i]);
-    }
+    private void Swap(int i, int j) => (_data[i], _data[j]) = (_data[j], _data[i]);
 
     private void GuardIndex(int index)
     {

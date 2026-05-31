@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(dotnet --version)",
-      "Bash(gh --version)"
+      "Bash(gh --version)",
+      "Bash(git checkout *)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet sln *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
