@@ -1,3 +1,5 @@
+using ds.shared;
+
 namespace ds.linkedlist.example;
 
 // ── Node ─────────────────────────────────────────────────────────────────────
@@ -30,6 +32,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// <summary>Prepends a node — O(1).</summary>
     public void AddFirst(T value)
     {
+        BigO.Print("O(1)",
+            "The new node is wired directly to the current head and becomes the new head. " +
+            "No traversal is needed regardless of list size.");
+
         Console.WriteLine($"\n[AddFirst] Adding '{value}' at the HEAD.");
         var node = new SinglyNode<T>(value);
         node.Next = _head;
@@ -47,6 +53,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// <summary>Appends a node — O(n) (must walk to the tail).</summary>
     public void AddLast(T value)
     {
+        BigO.Print("O(n)",
+            "There is no tail pointer, so the list must be walked node by node until the last one is reached. " +
+            "A doubly-linked list with a tail pointer makes this O(1).");
+
         Console.WriteLine($"\n[AddLast] Adding '{value}' at the TAIL.");
         var node = new SinglyNode<T>(value);
 
@@ -74,6 +84,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// <summary>Inserts after the first node whose value equals <paramref name="afterValue"/> — O(n).</summary>
     public void InsertAfter(T afterValue, T value)
     {
+        BigO.Print("O(n)",
+            "A linear scan is needed to find the target node. " +
+            "Once found, the actual insertion is O(1) — just pointer rewiring.");
+
         Console.WriteLine($"\n[InsertAfter] Looking for '{afterValue}' to insert '{value}' after it...");
         var current = _head;
         while (current is not null)
@@ -101,6 +115,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     {
         if (_head is null) { Console.WriteLine("\n[RemoveFirst] List is empty."); return; }
 
+        BigO.Print("O(1)",
+            "The head pointer is simply advanced to the next node. " +
+            "No traversal is required.");
+
         Console.WriteLine($"\n[RemoveFirst] Removing head {_head}.");
         _head = _head.Next;
         Count--;
@@ -115,6 +133,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     public void RemoveLast()
     {
         if (_head is null) { Console.WriteLine("\n[RemoveLast] List is empty."); return; }
+
+        BigO.Print("O(n)",
+            "With no tail pointer, the entire list must be walked to find the second-to-last node " +
+            "so its Next can be set to null. A doubly-linked list makes this O(1).");
 
         Console.WriteLine("\n[RemoveLast] Removing the TAIL node.");
 
@@ -143,6 +165,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// <summary>Removes the first node whose value equals <paramref name="value"/> — O(n).</summary>
     public bool Remove(T value)
     {
+        BigO.Print("O(n)",
+            "The list is scanned from the head until a matching node is found. " +
+            "Once found, unlinking it is O(1) — just update the previous node's Next pointer.");
+
         Console.WriteLine($"\n[Remove] Searching for '{value}'...");
         if (_head is null) { Console.WriteLine("         List is empty."); return false; }
 
@@ -180,6 +206,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// <summary>Linear scan — O(n).</summary>
     public bool Contains(T value)
     {
+        BigO.Print("O(n)",
+            "Each node is visited one by one from the head. " +
+            "Best case O(1) if the match is at the head; worst case O(n) if absent or at the tail.");
+
         Console.WriteLine($"\n[Contains] Searching for '{value}'...");
         var current = _head;
         int idx = 0;
@@ -205,11 +235,13 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// Setting _head to null makes the entire chain unreachable; the GC collects
     /// every node automatically. No need to walk and null out each Next pointer
     /// (that would be required in C++ where you must free() each node manually).
-    /// Exception: if T were IDisposable, you'd walk the list calling Dispose()
-    /// on each value before clearing — but that's about unmanaged resources, not GC.
     /// </summary>
     public void Clear()
     {
+        BigO.Print("O(1)",
+            "Dropping the head reference makes the entire node chain unreachable. " +
+            "The garbage collector reclaims all nodes automatically — no manual walk needed (unlike C++).");
+
         Console.WriteLine($"\n[Clear] Dropping reference to head. GC will collect all {Count} node(s).");
         _head = null;
         Count = 0;
@@ -225,6 +257,10 @@ public class SinglyLinkedList<T> where T : IComparable<T>
     /// </summary>
     public void Reverse()
     {
+        BigO.Print("O(n)",
+            "Every node's Next pointer must be re-wired exactly once using the three-pointer " +
+            "(prev / current / next) technique. One pass through the list suffices.");
+
         Console.WriteLine("\n[Reverse] Reversing the list in-place...");
         PrintList("Before");
 
@@ -233,11 +269,11 @@ public class SinglyLinkedList<T> where T : IComparable<T>
 
         while (current is not null)
         {
-            var next = current.Next;                    // save next
-            Console.WriteLine($"          {current}.Next  {(prev is null ? "null" : prev.ToString())}  (saved next={next?.ToString() ?? "null"})");
-            current.Next = prev;                        // reverse the pointer
-            prev = current;                             // advance prev
-            current = next;                             // advance current
+            var next = current.Next;
+            Console.WriteLine($"          {current}.Next → {(prev is null ? "null" : prev.ToString())}  (saved next={next?.ToString() ?? "null"})");
+            current.Next = prev;
+            prev = current;
+            current = next;
         }
 
         _head = prev;

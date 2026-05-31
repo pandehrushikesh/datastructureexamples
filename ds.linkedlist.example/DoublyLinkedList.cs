@@ -1,3 +1,5 @@
+using ds.shared;
+
 namespace ds.linkedlist.example;
 
 // ── Node ─────────────────────────────────────────────────────────────────────
@@ -34,6 +36,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     /// <summary>Prepends a node — O(1).</summary>
     public void AddFirst(T value)
     {
+        BigO.Print("O(1)",
+            "The new node is wired before the current head and becomes the new head. " +
+            "No traversal is needed — both the head pointer and the old head's Prev are updated directly.");
+
         Console.WriteLine($"\n[AddFirst] Adding '{value}' at the HEAD.");
         var node = new DoublyNode<T>(value);
 
@@ -56,6 +62,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     /// <summary>Appends a node — O(1) because we hold a tail pointer.</summary>
     public void AddLast(T value)
     {
+        BigO.Print("O(1)",
+            "The tail pointer gives direct access to the last node — no traversal required. " +
+            "This is the key advantage over a singly-linked list, where AddLast costs O(n).");
+
         Console.WriteLine($"\n[AddLast] Adding '{value}' at the TAIL.");
         var node = new DoublyNode<T>(value);
 
@@ -78,6 +88,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     /// <summary>Inserts a new node immediately BEFORE the first node matching <paramref name="beforeValue"/> — O(n).</summary>
     public void InsertBefore(T beforeValue, T value)
     {
+        BigO.Print("O(n)",
+            "A linear scan is needed to find the target node. " +
+            "The actual insertion is O(1) — four pointer updates using both Prev and Next links.");
+
         Console.WriteLine($"\n[InsertBefore] Looking for '{beforeValue}' to insert '{value}' before it...");
         var current = _head;
         while (current is not null)
@@ -92,7 +106,7 @@ public class DoublyLinkedList<T> where T : IComparable<T>
                 if (current.Prev is not null)
                     current.Prev.Next = node;
                 else
-                    _head = node;           // inserting before head
+                    _head = node;
 
                 current.Prev = node;
                 Count++;
@@ -108,6 +122,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     /// <summary>Inserts a new node immediately AFTER the first node matching <paramref name="afterValue"/> — O(n).</summary>
     public void InsertAfter(T afterValue, T value)
     {
+        BigO.Print("O(n)",
+            "A linear scan is needed to find the target node. " +
+            "The actual insertion is O(1) — four pointer updates using both Prev and Next links.");
+
         Console.WriteLine($"\n[InsertAfter] Looking for '{afterValue}' to insert '{value}' after it...");
         var current = _head;
         while (current is not null)
@@ -122,7 +140,7 @@ public class DoublyLinkedList<T> where T : IComparable<T>
                 if (current.Next is not null)
                     current.Next.Prev = node;
                 else
-                    _tail = node;           // inserting after tail
+                    _tail = node;
 
                 current.Next = node;
                 Count++;
@@ -141,6 +159,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     public void RemoveFirst()
     {
         if (_head is null) { Console.WriteLine("\n[RemoveFirst] List is empty."); return; }
+
+        BigO.Print("O(1)",
+            "The head pointer is advanced to the next node and its Prev is cleared. " +
+            "No traversal needed — direct pointer update.");
 
         Console.WriteLine($"\n[RemoveFirst] Removing head {_head}.");
 
@@ -164,6 +186,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     {
         if (_tail is null) { Console.WriteLine("\n[RemoveLast] List is empty."); return; }
 
+        BigO.Print("O(1)",
+            "The tail pointer gives direct access to the last node. Its Prev pointer leads immediately " +
+            "to the new tail — no traversal required. Singly-linked needs O(n) to do the same.");
+
         Console.WriteLine($"\n[RemoveLast] Removing tail {_tail}.");
 
         if (_head == _tail)
@@ -184,6 +210,10 @@ public class DoublyLinkedList<T> where T : IComparable<T>
     /// <summary>Removes the first node whose value equals <paramref name="value"/> — O(n).</summary>
     public bool Remove(T value)
     {
+        BigO.Print("O(n)",
+            "A linear scan from the head is needed to locate the node. " +
+            "Once found, unlinking it is O(1) — both Prev and Next neighbours are updated directly.");
+
         Console.WriteLine($"\n[Remove] Searching for '{value}'...");
         var current = _head;
         while (current is not null)
@@ -225,32 +255,15 @@ public class DoublyLinkedList<T> where T : IComparable<T>
         return false;
     }
 
-    // ── Clear ────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Clears the list — O(1) in C#.
-    /// Both _head AND _tail must be nulled out — if only _head were cleared,
-    /// _tail would still hold a reference to the last node, keeping the entire
-    /// chain alive in memory (a leak). The GC collects everything once both
-    /// ends are released.
-    /// </summary>
-    public void Clear()
-    {
-        Console.WriteLine($"\n[Clear] Nulling head and tail. GC will collect all {Count} node(s).");
-        Console.WriteLine("        (Doubly-linked: BOTH _head and _tail must be cleared —");
-        Console.WriteLine("         leaving _tail set would keep the whole chain alive in memory.)");
-        _head = null;
-        _tail = null;
-        Count = 0;
-        Console.WriteLine("[Clear] Done. List is now empty.");
-        PrintList("After Clear");
-    }
-
     // ── Query ────────────────────────────────────────────────────────────────
 
     /// <summary>Forward scan — O(n).</summary>
     public bool Contains(T value)
     {
+        BigO.Print("O(n)",
+            "Each node is visited one by one from the head. " +
+            "Best case O(1) if the match is at the head; worst case O(n) if absent or at the tail.");
+
         Console.WriteLine($"\n[Contains] Searching forward for '{value}'...");
         var current = _head;
         int idx = 0;
@@ -269,12 +282,33 @@ public class DoublyLinkedList<T> where T : IComparable<T>
         return false;
     }
 
-    // ── Traversal ────────────────────────────────────────────────────────────
+    // ── Clear ────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Walks the list BACKWARDS from the tail using Prev pointers —
-    /// something a singly-linked list cannot do without reversal.
+    /// Clears the list — O(1) in C#.
+    /// Both _head AND _tail must be nulled out — if only _head were cleared,
+    /// _tail would still hold a reference to the last node, keeping the entire
+    /// chain alive in memory (a leak).
     /// </summary>
+    public void Clear()
+    {
+        BigO.Print("O(1)",
+            "Both head and tail are set to null, making the entire chain unreachable for the GC. " +
+            "Unlike a singly-linked list, BOTH pointers must be cleared or _tail keeps the chain alive.");
+
+        Console.WriteLine($"\n[Clear] Nulling head and tail. GC will collect all {Count} node(s).");
+        Console.WriteLine("        (Doubly-linked: BOTH _head and _tail must be cleared —");
+        Console.WriteLine("         leaving _tail set would keep the whole chain alive in memory.)");
+        _head = null;
+        _tail = null;
+        Count = 0;
+        Console.WriteLine("[Clear] Done. List is now empty.");
+        PrintList("After Clear");
+    }
+
+    // ── Traversal ────────────────────────────────────────────────────────────
+
+    /// <summary>Walks the list BACKWARDS from the tail using Prev pointers.</summary>
     public void PrintReverse()
     {
         Console.WriteLine("\n[PrintReverse] Walking BACKWARDS from tail using Prev pointers...");
