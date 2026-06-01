@@ -294,7 +294,10 @@ public class AvlTree<T> where T : IComparable<T>
 
     public int Height()
     {
-        BigO.Print("O(n)", "Must visit every node to find the longest root-to-leaf path.");
+        BigO.Print("O(1)",
+            "Each AVL node stores its subtree height — updated in O(1) by UpdateHeight() after every " +
+            "rotation. Reading the height is simply _root.Height, not a tree traversal. " +
+            "(A plain BST without stored heights would need O(n) to compute this.)");
         int h = H(_root);
         Console.WriteLine($"\n[Height] = {h}  (a balanced tree of {Count} nodes ideally has height ≈ {(int)Math.Ceiling(Math.Log2(Count + 1)) - 1})");
         return h;

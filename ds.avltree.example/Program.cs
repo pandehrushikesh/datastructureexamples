@@ -33,10 +33,25 @@ avl.Insert(30);   // BF at 10 becomes -2 → RotateLeft → 20 becomes root
 // ────────────────────────────────────────────────────────────────────────────
 Section("2. More inserts — LR and RL double rotations");
 // ────────────────────────────────────────────────────────────────────────────
-Console.WriteLine("  Inserting: 5, 25, 15  →  triggers double rotations\n");
+Console.WriteLine("""
+  To trigger an LR double rotation we need:
+    BF at some node = +2  AND  its left child has BF < 0.
+  Inserting 5 then 7:
+    5 goes left of 10  → BF(10)=+1 (balanced)
+    7 goes right of 5  → BF(5)=-1, BF(10) becomes +2  ← LR case!
+    → RotateLeft(5) then RotateRight(10)
+
+  To trigger an RL double rotation we need:
+    BF at some node = -2  AND  its right child has BF > 0.
+  Inserting 35 then 32:
+    35 goes right of 30 → BF(30)=-1 (balanced)
+    32 goes left of 35  → BF(35)=+1, BF(30) becomes -2  ← RL case!
+    → RotateRight(35) then RotateLeft(30)
+""");
 avl.Insert(5);
-avl.Insert(25);
-avl.Insert(15);   // RL case at 20 → RotateRight(25) then RotateLeft(20)
+avl.Insert(7);    // LR case at node 10
+avl.Insert(35);
+avl.Insert(32);   // RL case at node 30
 
 // ────────────────────────────────────────────────────────────────────────────
 Section("3. Full balanced tree after 7 inserts");
@@ -103,7 +118,7 @@ Console.WriteLine("""
   │ Remove         │ O(log n)      │ Same bound; O(log n) rebalance steps     │
   │ Contains       │ O(log n)      │ Bounded height eliminates worst case     │
   │ InOrder        │ O(n)          │ Every node visited once                  │
-  │ Height         │ Stored at node│ O(1) per node read; tree walk is O(n)   │
+  │ Height         │ O(1)          │ Stored at each node — just read _root.Height│
   └────────────────┴───────────────┴──────────────────────────────────────────┘
 
   vs plain BST:
