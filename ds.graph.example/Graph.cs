@@ -199,6 +199,13 @@ public class DsGraph<T> where T : notnull, IComparable<T>
 
         foreach (var (nb, _) in _adj[node])
         {
+            // Self-loop is always a cycle regardless of root/parent status
+            if (nb.Equals(node))
+            {
+                Console.WriteLine($"    '{node}' → '{nb}' self-loop → CYCLE!");
+                return true;
+            }
+
             if (!visited.Contains(nb))
             {
                 if (DfsCycleUndirected(nb, node, visited, isRoot: false)) return true;
@@ -338,6 +345,12 @@ public class DsGraph<T> where T : notnull, IComparable<T>
             "V rounds, each scanning all V unvisited vertices to find the minimum distance. " +
             "A binary min-heap reduces this to O((V+E) log V) — the relaxation logic is identical " +
             "either way, so the linear scan makes the algorithm easiest to follow.");
+
+        // Dijkstra requires non-negative weights — negative edges break the greedy lock-in
+        foreach (var (_, neighbors) in _adj)
+            foreach (var (_, w) in neighbors)
+                if (w < 0) throw new InvalidOperationException(
+                    $"Dijkstra requires all edge weights ≥ 0. Found weight {w}. Use Bellman-Ford for negative weights.");
 
         Console.WriteLine($"\n[Dijkstra] Shortest paths from '{source}' (all weights ≥ 0)");
 
