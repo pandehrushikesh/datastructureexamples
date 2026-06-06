@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ds.launcher;
+namespace ds.launcher.windows;
 
 public class LauncherForm : Form
 {
