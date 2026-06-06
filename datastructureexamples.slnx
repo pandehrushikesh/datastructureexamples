@@ -3,6 +3,7 @@
   <Project Path="ds.avltree.example/ds.avltree.example.csproj" />
   <Project Path="ds.binaryheap.example/ds.binaryheap.example.csproj" />
   <Project Path="ds.binarytree.example/ds.binarytree.example.csproj" />
+  <Project Path="ds.graph.example/ds.graph.example.csproj" />
   <Project Path="ds.hashtable.example/ds.hashtable.example.csproj" />
   <Project Path="ds.linkedlist.example/ds.linkedlist.example.csproj" />
   <Project Path="ds.redblacktree.example/ds.redblacktree.example.csproj" />
